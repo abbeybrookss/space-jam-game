@@ -1,0 +1,136 @@
+// I coded this project from scatch. I did a twist on Space Jam, using the NBA player, Ja Morant, as an astronaut for the character, who fires a shooting star into a black hole/basketball goal. I drew, traced, and cut out images to make pngs with the app Procreate.
+
+// The first new thing I learned how to do was add images. I watched "7.8: Objects and Images" on YouTube by The Coding Train. I also used P5 reference "image()". (https://www.youtube.com/watch?v=i2C1hrJMwz0)
+
+// The second new thing I learned how to do was use keyPressed(), keyReleased(), and keyCode. I used the p5js references.
+
+// The third new thing I learned was object communication of rectangles/images. I watched "8.4 Class and Objects - Collision Detection - p5.js Tutorial" on Youtube by Xin Xin.(https://www.youtube.com/watch?v=cZ_VHAT_Sq4)
+
+// DISCLAIMER: I am unhappy with the way the shooting star moves, and  it was really challenging to make it's motion similar to a basketball's. I also could not figure out how to make the shooting star look like it was going through the hoop, rather than on top of it. It was hard to configure the shooting star and goal collision perfectly, because they are PNGs, not perfect rectangles, so they had transparent space around them that I had to account for. I could not find tutorials for any of the things I was unhappy with, but I tried my best to make it run as smoothly as I possibly could.
+
+//img global variables
+let space;
+let ja;
+let astro;
+let star;
+let hoop;
+
+//moving object global variables
+var goal = {
+  x: 580,
+  y: 200,
+  h: 216,
+  w: 288,
+  yspeed: 9,
+};
+
+var shootingstar = {
+  x: 148,
+  y: 299,
+  w: 108,
+  h: 81,
+  xspeed: 0,
+  yspeed: 0,
+};
+
+//image preload
+function preload() {
+  space = loadImage("bkg.JPG");
+  astro = loadImage("astro.PNG");
+  ja = loadImage("ja.PNG");
+  hoop = loadImage("hoop.PNG");
+  star = loadImage("star.PNG");
+}
+
+function setup() {
+  createCanvas(770, 500);
+}
+
+function draw() {
+  background(space);
+  textSize(30);
+  fill("white");
+  textAlign(CENTER);
+  textFont("arial black");
+  text("SPACE JAM", 385, 30);
+  textSize(10);
+  text("press spacebar to shoot", 75, 16);
+  text("created by Abbey Brooks", 690, 16);
+  image(astro, -61, 275, width / 2.5, height / 2.5);
+
+  // I could not decide if I wanted the astronaut to have Ja Morant's face or not. Comment out image below to see normal astronaut.
+  image(ja, -19, 248, width / 3.5, height / 3.4);
+
+  motion();
+  bounce();
+  display();
+  keyPressed();
+}
+
+function motion() {
+  goal.y = goal.y + goal.yspeed;
+  shootingstar.y = shootingstar.y + shootingstar.yspeed;
+  shootingstar.x = shootingstar.x + shootingstar.xspeed;
+}
+function bounce() {
+  checkCollision();
+  if (goal.y > 310 || goal.y < 20) {
+    goal.yspeed = goal.yspeed * -1;
+  }
+
+  if (shootingstar.x > 450) {
+    shootingstar.y = shootingstar.y + 1;
+  }
+
+  if (shootingstar.x > 470) {
+    shootingstar.y = shootingstar.y + 2;
+  }
+  if (shootingstar.x > 490) {
+    shootingstar.y = shootingstar.y + 2.5;
+  }
+
+  if (shootingstar.x > 510) {
+    shootingstar.y = shootingstar.y + 3;
+  }
+
+  if (shootingstar.x > width || shootingstar.y > height) {
+    if (keyIsPressed) {
+      shootingstar.x = 148;
+      shootingstar.y = 299;
+      shootingstar.yspeed = 0;
+      shootingstar.xspeed = 0;
+    }
+  }
+}
+
+function display() {
+  image(hoop, goal.x, goal.y, goal.w, goal.h);
+}
+
+function keyPressed() {
+  if (keyCode === 32) {
+    image(star, shootingstar.x, shootingstar.y, shootingstar.w, shootingstar.h);
+  }
+  return false;
+}
+
+function keyReleased() {
+  if (keyCode === 32) {
+    shootingstar.xspeed = 9;
+    shootingstar.yspeed = -4;
+  }
+
+  return false;
+}
+
+function checkCollision() {
+  if (
+    shootingstar.x + shootingstar.w / 2 > goal.x + 85 &&
+    shootingstar.x < goal.x + 85 + goal.w / 3 &&
+    shootingstar.y + shootingstar.h > goal.y + 80 &&
+    shootingstar.y < goal.y + 80 + goal.h
+  ) {
+    shootingstar.yspeed = 5;
+    shootingstar.xspeed = 1;
+  }
+}
